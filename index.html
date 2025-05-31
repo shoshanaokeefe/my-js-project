@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My JavaScript Project</title>
+    <title>Computer Science History Quiz</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,25 +16,88 @@
         }
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
         }
-        #greeting {
-            color: #333;
-            font-size: 24px;
+        .question {
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 24px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 id="greeting">Loading...</h1>
+        <h1>Computer Science History Quiz</h1>
+        <div class="question">
+            Who is often called the first computer programmer, known for their work with Charles Babbage's Analytical Engine in the 1800s?
+        </div>
+        <input type="text" id="answer" placeholder="Type your answer here">
+        <button onclick="checkAnswer()">Submit Answer</button>
+        <div id="result"></div>
     </div>
-    <script src="index.js"></script>
+
     <script>
-        // Display the greeting
-        document.getElementById('greeting').textContent = 'Hello, World!';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAAPwSdx0hm1jOlxxcK5r6pnlBvh1v70O3Ln0NiWoOaG683q7G5AvqXMLFE9ipwbKl/exec';
+        
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = 'ada lovelace';
+            const isCorrect = userAnswer === correctAnswer;
+            
+            // Display result to user
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.color = isCorrect ? '#4CAF50' : '#f44336';
+            resultDiv.textContent = isCorrect ? 
+                'Correct! Ada Lovelace is considered the first computer programmer.' : 
+                'Not quite. The correct answer is Ada Lovelace.';
+
+            // Send result to Google Sheet
+            const data = {
+                question: 'Who is often called the first computer programmer?',
+                answer: userAnswer,
+                correct: isCorrect ? 'Correct' : 'Incorrect'
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 </html> 
