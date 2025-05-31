@@ -10,9 +10,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            padding: 20px;
         }
         .container {
             text-align: center;
@@ -27,6 +28,7 @@
             margin-bottom: 20px;
             font-size: 18px;
             line-height: 1.5;
+            text-align: left;
         }
         input[type="text"] {
             width: 80%;
@@ -54,39 +56,161 @@
             font-weight: bold;
             min-height: 24px;
         }
+        .question-container {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: left;
+        }
+        .name-container {
+            margin-bottom: 30px;
+        }
+        .score {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #2196F3;
+        }
+        .options-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #f5f5f5;
+        }
+        .option input[type="radio"] {
+            margin: 0;
+            cursor: pointer;
+        }
+        .option label {
+            cursor: pointer;
+            flex-grow: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Computer Science History Quiz</h1>
-        <div class="question">
-            Who is often called the first computer programmer, known for their work with Charles Babbage's Analytical Engine in the 1800s?
+        
+        <div class="name-container">
+            <label for="student-name">Your Name:</label>
+            <input type="text" id="student-name" placeholder="Enter your name">
         </div>
-        <input type="text" id="answer" placeholder="Type your answer here">
-        <button onclick="checkAnswer()">Submit Answer</button>
+
+        <div class="question-container">
+            <div class="question">
+                <strong>Question 1:</strong><br>
+                Who is often called the first computer programmer, known for their work with Charles Babbage's Analytical Engine in the 1800s?
+            </div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q1a" name="question1" value="charles babbage">
+                    <label for="q1a">Charles Babbage</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1b" name="question1" value="ada lovelace">
+                    <label for="q1b">Ada Lovelace</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1c" name="question1" value="alan turing">
+                    <label for="q1c">Alan Turing</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q1d" name="question1" value="george boole">
+                    <label for="q1d">George Boole</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question">
+                <strong>Question 2:</strong><br>
+                Who invented the World Wide Web in 1989 while working at CERN?
+            </div>
+            <div class="options-container">
+                <div class="option">
+                    <input type="radio" id="q2a" name="question2" value="tim berners-lee">
+                    <label for="q2a">Tim Berners-Lee</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2b" name="question2" value="vint cerf">
+                    <label for="q2b">Vint Cerf</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2c" name="question2" value="larry page">
+                    <label for="q2c">Larry Page</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="q2d" name="question2" value="marc andreessen">
+                    <label for="q2d">Marc Andreessen</label>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="checkAnswers()">Submit Answers</button>
         <div id="result"></div>
+        <div id="score" class="score"></div>
     </div>
 
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAAPwSdx0hm1jOlxxcK5r6pnlBvh1v70O3Ln0NiWoOaG683q7G5AvqXMLFE9ipwbKl/exec';
         
-        function checkAnswer() {
-            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
-            const correctAnswer = 'ada lovelace';
-            const isCorrect = userAnswer === correctAnswer;
-            
-            // Display result to user
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.color = isCorrect ? '#4CAF50' : '#f44336';
-            resultDiv.textContent = isCorrect ? 
-                'Correct! Ada Lovelace is considered the first computer programmer.' : 
-                'Not quite. The correct answer is Ada Lovelace.';
+        function checkAnswers() {
+            const studentName = document.getElementById('student-name').value.trim();
+            if (!studentName) {
+                alert('Please enter your name before submitting!');
+                return;
+            }
 
-            // Send result to Google Sheet
+            const answer1 = document.querySelector('input[name="question1"]:checked');
+            const answer2 = document.querySelector('input[name="question2"]:checked');
+
+            if (!answer1 || !answer2) {
+                alert('Please answer all questions before submitting!');
+                return;
+            }
+
+            const correctAnswer1 = 'ada lovelace';
+            const correctAnswer2 = 'tim berners-lee';
+            
+            const isCorrect1 = answer1.value === correctAnswer1;
+            const isCorrect2 = answer2.value === correctAnswer2;
+            
+            const score = (isCorrect1 ? 1 : 0) + (isCorrect2 ? 1 : 0);
+            
+            // Display results to user
+            const resultDiv = document.getElementById('result');
+            const scoreDiv = document.getElementById('score');
+            
+            let feedback = '';
+            feedback += 'Question 1: ' + (isCorrect1 ? 'Correct!' : 'The correct answer is Ada Lovelace') + '<br>';
+            feedback += 'Question 2: ' + (isCorrect2 ? 'Correct!' : 'The correct answer is Tim Berners-Lee') + '<br>';
+            
+            resultDiv.innerHTML = feedback;
+            scoreDiv.textContent = `Score: ${score} out of 2 points`;
+
+            // Send results to Google Sheet
             const data = {
-                question: 'Who is often called the first computer programmer?',
-                answer: userAnswer,
-                correct: isCorrect ? 'Correct' : 'Incorrect'
+                timestamp: new Date().toISOString(),
+                name: studentName,
+                question1: 'Who is the first computer programmer?',
+                answer1: answer1.value,
+                correct1: isCorrect1 ? 'Correct' : 'Incorrect',
+                question2: 'Who invented the World Wide Web?',
+                answer2: answer2.value,
+                correct2: isCorrect2 ? 'Correct' : 'Incorrect',
+                score: score
             };
 
             fetch(GOOGLE_SCRIPT_URL, {
