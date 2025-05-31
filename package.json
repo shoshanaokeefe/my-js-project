@@ -3,10 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage": "https://shoshanaokeefe.github.io/my-js-project",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d public",
+    "build": "mkdir -p public && cp -r index.js public/ && cp -r index.html public/"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
 }
